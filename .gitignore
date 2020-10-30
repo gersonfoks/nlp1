@@ -1,3 +1,4 @@
 *.json
 sent_lexicon
-.ipynb_checkpoint*
+.ipynb_checkpoints
+
