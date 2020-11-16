@@ -3,4 +3,5 @@ sent_lexicon
 .ipynb_checkpoints
 .idea
 trees
-
+*.pyc
+histories

@@ -21,7 +21,11 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
     history = {"train_loss": [],
                "train_eval": [],
                "test_loss": [],
-               "test_eval": []
+               "test_eval": [],
+               "settings": {
+                   "n_epochs": n_epochs,
+                   'eval_every': eval_every
+               }
                }  # Object that keeps track of the history of
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -63,9 +67,8 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
         if eval_callback:
             history["train_eval"].append(eval_callback.accumulate())
 
-
         ### Evaluation
-        if epoch % eval_every == 0:
+        if epoch % eval_every == 0 or epoch == n_epochs - 1:
 
             model.eval()
             loss_eval = 0
@@ -99,7 +102,5 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
             if eval_callback:
                 history["test_eval"].append(eval_callback.accumulate())
             model.train()
-
-
 
     return history
