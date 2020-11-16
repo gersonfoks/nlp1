@@ -31,8 +31,8 @@ eval_callback = ListCallback([
     AccuracyCallback()
 ])
 
-history = train_model(model, optimizer, train_dataloader, eval_dataloader, eval_callback=eval_callback, n_epochs=25,
-                      eval_every=5)
+history = train_model(model, optimizer, train_dataloader, eval_dataloader, eval_callback=eval_callback, n_epochs=5,
+                      eval_every=1)
 
 
 save_history(history, 'histories/cbow')
