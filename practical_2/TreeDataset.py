@@ -16,7 +16,6 @@ class TreeDataset(Dataset):
         self.transform = transform
 
         ### this dataset automatically creates a vocab
-
         self.prepare_vocab()
 
     def __len__(self):

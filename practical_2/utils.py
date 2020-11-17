@@ -153,3 +153,21 @@ def plot_history(history, title, flag=True):
         plt.ylabel(name)
         plt.savefig("{}_{}".format(save_title, name))
         plt.show()
+
+def load_pretrained_weights(ref, init_func=np.zeros):
+
+    v = Vocabulary()
+    vectors = []
+    v.add_token("<unk>")  # reserve 0 for <unk> (unknown words)
+    v.add_token("<pad>")  # reserve 1 for <pad> (discussed later)
+
+    with open(ref, mode='r', encoding="utf-8") as f:
+        for line in f:
+            line_list = line.split()
+            v.add_token(line_list[0])
+            vectors.append(line_list[1:])
+    vector_len = len(vectors[0])
+
+    vectors = np.array( init_func(2, vector_len) + vectors).astype(float)
+
+    return v, vectors

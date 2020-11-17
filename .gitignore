@@ -5,3 +5,4 @@ sent_lexicon
 trees
 *.pyc
 histories
+embeddings

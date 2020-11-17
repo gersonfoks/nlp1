@@ -30,7 +30,7 @@ class CBOW(nn.Module):
 
         # the output is the sum across the time dimension (1)
         # with the bias term added
-        logits = x.sum(1) + self.bias
+        logits = x.sum(1)
 
         return logits
 
