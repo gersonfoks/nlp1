@@ -15,9 +15,6 @@ class CBOW(nn.Module):
         self.embed = nn.Embedding(vocab_size, embedding_dim)
         self.l1 = nn.Linear(embedding_dim, 5)
 
-        # this is a trainable bias term
-        self.bias = nn.Parameter(torch.zeros(out_size), requires_grad=True)
-
     def forward(self, inputs):
         # this is the forward pass of the neural network
         # it applies a function to the input and returns the output

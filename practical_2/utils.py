@@ -145,7 +145,7 @@ def plot_history(history, title, flag=True):
         plt.plot(x, y, label='Train {}'.format(name))
 
         x = np.arange(eval_freq * len(history['test_eval']), step=eval_freq)
-        y = [history['test_eval'][i][name] for i in range(len(history['test_eval']),)]
+        y = [history['test_eval'][i][name] for i in range(len(history['test_eval']), )]
         plt.plot(x, y, label='Test {}'.format(name))
         plt.legend()
         plt.title("Accuracy of {}".format(title))
@@ -154,8 +154,8 @@ def plot_history(history, title, flag=True):
         plt.savefig("{}_{}".format(save_title, name))
         plt.show()
 
-def load_pretrained_weights(ref, init_func=np.zeros):
 
+def load_pretrained_weights(ref, init_func=np.zeros):
     v = Vocabulary()
     vectors = []
     v.add_token("<unk>")  # reserve 0 for <unk> (unknown words)
@@ -168,6 +168,6 @@ def load_pretrained_weights(ref, init_func=np.zeros):
             vectors.append(line_list[1:])
     vector_len = len(vectors[0])
 
-    vectors = np.array( init_func(2, vector_len) + vectors).astype(float)
+    vectors = np.array(init_func(2, vector_len) + vectors).astype(float)
 
     return v, vectors

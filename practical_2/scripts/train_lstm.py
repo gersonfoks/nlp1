@@ -4,8 +4,6 @@ from practical_2.models.BOW import *
 from torch.optim import *
 from practical_2.callbacks.callbacks import *
 from practical_2.models.CBOW import create_cbow_model
-from practical_2.models.DeepCBOW import create_deep_cbow_model, zero_init_function, create_glove_deep_cbow_model, \
-    create_w2v_deep_cbow_model
 from practical_2.prepare import prepare
 from practical_2.utils import *
 from practical_2.train import train_model
@@ -23,8 +21,9 @@ eval_testset.transform = transform
 
 train_dataloader = DataLoader(train_dataset, batch_size=1)
 eval_dataloader = DataLoader(eval_testset)
+v = train_dataset.v
 
-model = create_w2v_deep_cbow_model()
+model = create_cbow_model(v)
 
 optimizer = Adam(model.parameters(), lr=0.0005)
 
@@ -35,4 +34,5 @@ eval_callback = ListCallback([
 history = train_model(model, optimizer, train_dataloader, eval_dataloader, eval_callback=eval_callback, n_epochs=5,
                       eval_every=1)
 
-save_history(history, 'histories/w2v_pt_deep_cbow')
+
+save_history(history, 'histories/cbow')
