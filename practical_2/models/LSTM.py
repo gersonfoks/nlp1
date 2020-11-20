@@ -2,7 +2,8 @@ from torch import nn
 import math
 import torch
 
-from practical_2.utils import t2i
+from practical_2.models.DeepCBOW import zero_init_function
+from practical_2.utils import t2i, get_pretrained_weights
 
 
 class LSTMClassifier(nn.Module):
@@ -71,6 +72,16 @@ class LSTMClassifier(nn.Module):
         # we use the last hidden state to classify the sentence
         logits = self.output_layer(final)
         return logits
+
+    def load_pretrained_weights(self, vectors):
+        '''
+            Loads the pretrained weights from the given file.
+            Returns the vocab that it created loading the weights
+        :param ref:
+        :return:
+        '''
+        self.embed.weight.data.copy_(torch.from_numpy(vectors))
+        #self.embed.requires_grad = False
 
 
 class MyLSTMCell(nn.Module):
@@ -145,5 +156,11 @@ class InputHiddenLayer(nn.Module):
         return self.activation_function(torch.matmul(x, self.w_in) + torch.matmul(h, self.w_hidden) + self.b)
 
 
-def create_lstm(v):
-    lstm_model = LSTMClassifier(len(v.w2i), 300, 168, len(t2i), v)
+def create_lstm():
+    ref = "embeddings/googlenews.word2vec.300d.txt"
+    v, vectors = get_pretrained_weights(ref, zero_init_function)
+    vocab_size = len(v.w2i)
+    n_classes = len(t2i)
+    lstm = LSTMClassifier(len(v.w2i), 300, 168, len(t2i), v)
+    lstm.load_pretrained_weights(vectors)
+    return lstm

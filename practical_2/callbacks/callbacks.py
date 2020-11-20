@@ -28,9 +28,9 @@ class AccuracyCallback(CallBack):
         self.count = 0
 
     def forward(self, out, y):
-        predictions = out.argmax(dim=-1)
+        predictions = out.argmax(dim=-1).view(-1)
         self.results += (predictions == y).sum().item()
-        self.count += 1
+        self.count += len(y)
 
     def accumulate(self):
         result = self.results / self.count

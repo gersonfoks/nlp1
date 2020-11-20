@@ -155,7 +155,7 @@ def plot_history(history, title, flag=True):
         plt.show()
 
 
-def load_pretrained_weights(ref, init_func=np.zeros):
+def get_pretrained_weights(ref, init_func=np.zeros):
     v = Vocabulary()
     vectors = []
     v.add_token("<unk>")  # reserve 0 for <unk> (unknown words)

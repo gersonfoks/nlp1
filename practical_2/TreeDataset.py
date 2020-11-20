@@ -23,12 +23,11 @@ class TreeDataset(Dataset):
 
     def __getitem__(self, idx):
         sample = self.data[idx]
-        x= sample.tokens
-        y = sample.tokens
+        x = sample.tokens
+        y = sample.label
 
         if self.transform:
             x, y = self.transform(sample)
-
 
         return x, y
 
@@ -52,14 +51,35 @@ def prepare_example(example, vocab):
 
     x = torch.LongTensor(x)
 
-
     y = example.label
-
 
     return x, y
 
 
+def pad(tokens, length, pad_value=1):
+    """add padding 1s to a sequence to that it has the desired length"""
+    return tokens + [pad_value] * (length - len(tokens))
+
+
+def pad_batch(mb):
+    """
+    Minibatch is a list of examples.
+
+    torch tensors to be used as input/targets.
+    """
+    x = [sample[0] for sample in mb]
+    y = [sample[1] for sample in mb]
+
+    batch_size = len(mb)
+    maxlen = max([len(ex) for ex in x])
+
+    # vocab returns 0 if the word is not there
+    x = [pad(ex.tolist(), maxlen) for ex in x]
+
+    x = torch.LongTensor(x)
+
+    y = torch.LongTensor(y)
 
 
 
-
+    return x, y

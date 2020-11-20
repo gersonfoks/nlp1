@@ -37,13 +37,12 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
 
         ## The training loop
         loss_epoch = 0
-        seen_examples = 0
+        n_steps = 0
         callback_values = []
         for x, y in train_dataloader:
-
             optimizer.zero_grad()
 
-            seen_examples += len(x)
+            n_steps += 1
 
             # Put it on gpu
             x, y = x.to(device), y.to(device)
@@ -63,23 +62,23 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
             if eval_callback:
                 eval_callback.forward(out, y)
 
-        history["train_loss"].append(loss_epoch / seen_examples)
+        history["train_loss"].append(loss_epoch / n_steps)
         if eval_callback:
             history["train_eval"].append(eval_callback.accumulate())
 
         ### Evaluation
         if epoch % eval_every == 0 or epoch == n_epochs - 1:
+            model.eval()
             with torch.no_grad():
-                model.eval()
 
                 loss_eval = 0
-                seen_examples = 0
+                n_steps = 0
                 callback_values = []
                 for x, y in eval_dataloader:
 
                     optimizer.zero_grad()
 
-                    seen_examples += len(x)
+                    n_steps += 1
 
                     # Put it on gpu
                     x, y = x.to(device), y.to(device)
@@ -95,9 +94,10 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
                     if eval_callback:
                         eval_callback.forward(out, y)
 
-                history["test_loss"].append(loss_eval / seen_examples)
+                history["test_loss"].append(loss_eval / n_steps)
                 if eval_callback:
                     history["test_eval"].append(eval_callback.accumulate())
+
                 model.train()
 
     return history

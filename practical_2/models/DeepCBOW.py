@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from practical_2.utils import t2i, Vocabulary, load_pretrained_weights
+from practical_2.utils import t2i, Vocabulary, get_pretrained_weights
 import numpy as np
 
 
@@ -27,8 +27,6 @@ class DeepCBOW(nn.Module):
 
         ]
 
-        # this is a trainable bias term
-        self.bias = nn.Parameter(torch.zeros(out_size), requires_grad=True)
 
     def forward(self, inputs):
         # this is the forward pass of the neural network
@@ -62,6 +60,7 @@ class PTDeepCBOW(DeepCBOW):
         :return:
         '''
         self.embed.weight.data.copy_(torch.from_numpy(vectors))
+        self.embed.requires_grad = False ### Make sure we do not train it any further
 
 
 def create_deep_cbow_model(v):
@@ -73,7 +72,7 @@ def create_deep_cbow_model(v):
 
 def create_glove_deep_cbow_model():
     ref = "embeddings/glove.840B.300d.sst.txt"
-    v, vectors = load_pretrained_weights(ref, zero_init_function)
+    v, vectors = get_pretrained_weights(ref, zero_init_function)
     vocab_size = len(v.w2i)
     n_classes = len(t2i)
 
@@ -85,7 +84,7 @@ def create_glove_deep_cbow_model():
 
 def create_w2v_deep_cbow_model():
     ref = "embeddings/googlenews.word2vec.300d.txt"
-    v, vectors = load_pretrained_weights(ref, zero_init_function)
+    v, vectors = get_pretrained_weights(ref, zero_init_function)
     vocab_size = len(v.w2i)
     n_classes = len(t2i)
 
