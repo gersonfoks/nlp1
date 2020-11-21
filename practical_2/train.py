@@ -44,9 +44,6 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
 
             n_steps += 1
 
-            # Put it on gpu
-            x, y = x.to(device), y.to(device)
-
             # Forward pass
             out = model.forward(x)
 
@@ -80,8 +77,6 @@ def train_model(model, optimizer, train_dataloader, eval_dataloader, n_epochs=20
 
                     n_steps += 1
 
-                    # Put it on gpu
-                    x, y = x.to(device), y.to(device)
 
                     # Forward pass
                     out = model.forward(x)

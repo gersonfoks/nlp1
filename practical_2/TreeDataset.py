@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import Dataset
 from practical_2.utils import *
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 class TreeDataset(Dataset):
 
@@ -23,7 +25,7 @@ class TreeDataset(Dataset):
 
     def __getitem__(self, idx):
         sample = self.data[idx]
-        x = sample.tokens
+        x = sample
         y = sample.label
 
         if self.transform:
@@ -76,10 +78,33 @@ def pad_batch(mb):
     # vocab returns 0 if the word is not there
     x = [pad(ex.tolist(), maxlen) for ex in x]
 
-    x = torch.LongTensor(x)
-
-    y = torch.LongTensor(y)
-
-
+    x = torch.LongTensor(x).to(device)
+    y = torch.LongTensor(y).to(device)
 
     return x, y
+
+
+def prepare_treelstm_minibatch(mb, vocab):
+    """
+    Returns sentences reversed (last word first)
+    Returns transitions together with the sentences.
+    """
+    mb = [sample[0] for sample in mb]
+    batch_size = len(mb)
+    maxlen = max([len(ex.tokens) for ex in mb])
+
+    # vocab returns 0 if the word is not there
+    # NOTE: reversed sequence!
+    x = [pad([vocab.w2i.get(t, 0) for t in ex.tokens], maxlen)[::-1] for ex in mb]
+
+    x = torch.LongTensor(x)
+    x = x.to(device)
+    y = [ex.label for ex in mb]
+    y = torch.LongTensor(y)
+    y = y.to(device)
+    maxlen_t = max([len(ex.transitions) for ex in mb])
+    transitions = [pad(ex.transitions, maxlen_t, pad_value=2) for ex in mb]
+    transitions = np.array(transitions)
+    transitions = transitions.T  # time-major
+
+    return (x, transitions), y

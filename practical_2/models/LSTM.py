@@ -81,7 +81,7 @@ class LSTMClassifier(nn.Module):
         :return:
         '''
         self.embed.weight.data.copy_(torch.from_numpy(vectors))
-        #self.embed.requires_grad = False
+        self.embed.requires_grad = False
 
 
 class MyLSTMCell(nn.Module):
